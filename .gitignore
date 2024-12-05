@@ -1,3 +1,10 @@
+# YOLO files
+*.pt
+
+# Video files
+*.mp4
+*.avi
+
 # Python-generated files
 __pycache__/
 *.py[oc]
