@@ -73,69 +73,81 @@ def main():
 
     # 4. Track ID Movement
     st.subheader("Análisis de Trayectoria Individual de Vehículos")
-    st.write(
-        "Esta visualización muestra la ruta de cada vehículo detectado a través de la vista de la cámara"
-    )
-    st.write(
-        "- Los cambios de color de rojo a azul muestran la dirección del movimiento"
-    )
-    st.write(
-        "- Pase el cursor sobre los puntos para ver el tiempo y la posición exactos"
-    )
-
-    selected_track = st.selectbox(
-        "Seleccione ID del Vehículo a Seguir", sorted(df["Track ID"].unique())
-    )
-    track_df = df[df["Track ID"] == selected_track]
-
-    fig_track = px.scatter(
-        track_df,
-        x="X",
-        y="Y",
-        color="Frame",
-        color_continuous_scale="Reds",
-        text="Frame",
-        hover_data={"Timestamp": True, "X": ":.1f", "Y": ":.1f", "Frame": True},
-        title=f"Ruta del Vehículo #{selected_track}",
-        labels={
-            "X": "Posición Izquierda a Derecha (píxeles)",
-            "Y": "Posición Arriba a Abajo (píxeles)",
-            "Frame": "Progresión de Tiempo",
-        },
-    )
-
-    fig_track.update_layout(
-        yaxis_autorange="reversed", showlegend=True, hovermode="closest"
-    )
-
-    for i in range(len(track_df) - 1):
-        fig_track.add_annotation(
-            x=track_df.iloc[i]["X"],
-            y=track_df.iloc[i]["Y"],
-            ax=track_df.iloc[i + 1]["X"],
-            ay=track_df.iloc[i + 1]["Y"],
-            xref="x",
-            yref="y",
-            axref="x",
-            ayref="y",
-            showarrow=True,
-            arrowhead=2,
-            arrowsize=1,
-            arrowwidth=1,
-            arrowcolor="#888",
-        )
-
-    st.plotly_chart(fig_track)
-
-    st.write("### Estadísticas del Vehículo Seleccionado")
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("Tiempo en Cuadro", f"{len(track_df)} frames")
+        selected_track = st.selectbox(
+            "Seleccione ID del Vehículo a Seguir", sorted(df["Track ID"].unique())
+        )
+        track_df = df[df["Track ID"] == selected_track]
+
+        # Plot trajectory
+        fig_track = px.scatter(
+            track_df,
+            x="X",
+            y="Y",
+            color="Frame",
+            color_continuous_scale="Reds",
+            text="Frame",
+            hover_data={"Timestamp": True, "X": ":.1f", "Y": ":.1f", "Frame": True},
+            title=f"Ruta del Vehículo #{selected_track}",
+            labels={
+                "X": "Posición Izquierda a Derecha (píxeles)",
+                "Y": "Posición Arriba a Abajo (píxeles)",
+                "Frame": "Progresión de Tiempo",
+            },
+        )
+
+        fig_track.update_layout(
+            yaxis_autorange="reversed", showlegend=True, hovermode="closest"
+        )
+
+        # Add trajectory arrows
+        for i in range(len(track_df) - 1):
+            fig_track.add_annotation(
+                x=track_df.iloc[i]["X"],
+                y=track_df.iloc[i]["Y"],
+                ax=track_df.iloc[i + 1]["X"],
+                ay=track_df.iloc[i + 1]["Y"],
+                xref="x",
+                yref="y",
+                axref="x",
+                ayref="y",
+                showarrow=True,
+                arrowhead=2,
+                arrowsize=1,
+                arrowwidth=1,
+                arrowcolor="#888",
+            )
+
+        st.plotly_chart(fig_track)
+
     with col2:
-        distance = (
-            (track_df["X"].diff() ** 2 + track_df["Y"].diff() ** 2) ** 0.5
-        ).sum()
-        st.metric("Distancia Total", f"{distance:.1f} píxeles")
+        # Display detected car image
+        st.write("### Imagen del Vehículo")
+        # Assuming images are stored in "detected_cars" folder with format "track_{id}.jpg"
+        image_path = f"detected_cars/car_id{selected_track}.jpg"
+        try:
+            st.image(image_path, caption=f"Vehículo ID #{selected_track}")
+        except FileNotFoundError:
+            st.warning("Imagen no disponible para este vehículo")
+
+        # Show additional details if available
+        st.write("### Detalles Adicionales")
+        st.write("Dimensiones promedio:")
+        avg_w = track_df["W"].mean()
+        avg_h = track_df["H"].mean()
+        st.write(f"- Ancho: {avg_w:.1f} píxeles")
+        st.write(f"- Alto: {avg_h:.1f} píxeles")
+        # Display car metrics
+        st.write("### Estadísticas del Vehículo")
+        subcol1, subcol2 = st.columns(2)
+        with subcol1:
+            st.metric("Tiempo en Cuadro", f"{len(track_df)} frames")
+        with subcol2:
+            distance = (
+                (track_df["X"].diff() ** 2 + track_df["Y"].diff() ** 2) ** 0.5
+            ).sum()
+            st.metric("Distancia Total", f"{distance:.1f} píxeles")
 
     # 5. Size Distribution
     st.subheader("Distribución de Tamaños de Vehículos")
