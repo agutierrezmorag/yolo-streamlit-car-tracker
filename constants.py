@@ -10,3 +10,9 @@ REGION_POINTS = [
 ]
 
 RESIZE_FACTOR = 0.5
+
+YOLO_MODELS = [
+    "yolo11n.pt",  # nano
+    "yolo11s.pt",  # small
+    "yolo11m.pt",  # medium
+]

@@ -5,13 +5,7 @@ from datetime import datetime
 import cv2
 from ultralytics import solutions
 
-from constants import REGION_POINTS, RESIZE_FACTOR
-
-YOLO_MODELS = [
-    "yolo11n.pt",  # nano
-    "yolo11s.pt",  # small
-    "yolo11m.pt",  # medium
-]
+from constants import REGION_POINTS, RESIZE_FACTOR, YOLO_MODELS
 
 
 def create_directories(model_name):
