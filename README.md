@@ -4,13 +4,13 @@ Este proyecto implementa un sistema de detección y seguimiento de vehículos ut
 
 ## 🚀 Características
 
-- Detección y seguimiento de vehículos en tiempo real
-- Soporte para múltiples modelos YOLO (nano, small, medium)
-- Interfaz web interactiva para análisis de datos
-- Visualización de estadísticas y métricas
-- Análisis de trayectorias individuales
-- Mapas de calor de detecciones
-- Estadísticas de tamaño y distribución
+- **Detección y seguimiento de vehículos** en tiempo real
+- **Soporte para múltiples modelos** YOLO (nano, small, medium)
+- **Interfaz web interactiva** para análisis de datos
+- Visualización de **estadísticas y métricas**
+- Análisis de **trayectorias individuales**
+- **Mapas de calor** de detecciones
+- Estadísticas de **tamaño y distribución**
 
 ## 📋 Requisitos del Sistema
 
