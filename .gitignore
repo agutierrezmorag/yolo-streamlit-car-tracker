@@ -5,7 +5,6 @@ output_*/
 *.pt
 
 # Video files
-*.mp4
 *.avi
 
 # Python-generated files
