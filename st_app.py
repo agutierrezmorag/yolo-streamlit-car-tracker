@@ -22,7 +22,7 @@ def main():
         st.metric("Total de Vehículos Únicos", len(df["Track ID"].unique()))
 
         # Group by minute and calculate averages
-        df["Minute"] = df["Timestamp"].dt.floor("T")  # Round to minute
+        df["Minute"] = df["Timestamp"].dt.floor("min")  # Round to minute
         vehicles_per_min = df.groupby("Minute")["Track ID"].nunique()
 
         # Calculate true per-minute metrics
@@ -36,7 +36,7 @@ def main():
     # 2. Object Count Over Time
     with col1:
         st.subheader("Conteo de Vehículos en el Tiempo")
-        df["Minute"] = df["Timestamp"].dt.floor("T")
+        df["Minute"] = df["Timestamp"].dt.floor("min")
         count_df = df.groupby("Minute").size().reset_index(name="count")
 
         fig_count = px.line(
