@@ -23,7 +23,11 @@ def get_available_models():
 
 
 def main():
-    st.set_page_config(layout="wide")
+    st.set_page_config(
+        layout="wide",
+        page_title="Vehicle Tracking Analysis",
+        page_icon="🚗",
+    )
     st.title("Análisis de Seguimiento de Vehículos")
 
     # Model selection in sidebar
