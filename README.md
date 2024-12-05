@@ -86,3 +86,9 @@ Este proyecto implementa un sistema de detección y seguimiento de vehículos ut
     ├── data/                   # Datos CSV de detecciones
     └── detected_cars/          # Imágenes de vehículos detectados
 ```
+
+## 🖼️ Screenshots
+
+![Screenshot 1](screenshots/ss1.png)
+
+![Screenshot 2](screenshots/ss2.png)
