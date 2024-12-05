@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "lapx>=0.5.11.post1",
+    "plotly>=5.24.1",
     "shapely>=2.0.6",
     "streamlit>=1.40.2",
     "ultralytics>=8.3.40",
