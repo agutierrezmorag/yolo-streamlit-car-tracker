@@ -14,6 +14,7 @@ def load_data(model_name):
     return df
 
 
+# Get available YOLO model outputs
 def get_available_models():
     """Get list of available model outputs"""
     return [
@@ -148,10 +149,15 @@ def main():
     with col2:
         # Display detected car image
         st.write("### Imagen del Vehículo")
-        # Assuming images are stored in "detected_cars" folder with format "track_{id}.jpg"
-        image_path = f"detected_cars/car_id{selected_track}.jpg"
+        # Update path to use model-specific directory
+        image_path = os.path.join(
+            f"output_{selected_model}", "detected_cars", f"car_id{selected_track}.jpg"
+        )
         try:
-            st.image(image_path, caption=f"Vehículo ID #{selected_track}")
+            st.image(
+                image_path,
+                caption=f"Vehículo ID #{selected_track} - Modelo {selected_model.upper()}",
+            )
         except FileNotFoundError:
             st.warning("Imagen no disponible para este vehículo")
 
@@ -160,18 +166,29 @@ def main():
         st.write("Dimensiones promedio:")
         avg_w = track_df["W"].mean()
         avg_h = track_df["H"].mean()
-        st.write(f"- Ancho: {avg_w:.1f} píxeles")
-        st.write(f"- Alto: {avg_h:.1f} píxeles")
+        area = avg_w * avg_h
+
+        metrics_col1, metrics_col2 = st.columns(2)
+        with metrics_col1:
+            st.write(f"- Ancho: {avg_w:.1f} píxeles")
+            st.write(f"- Alto: {avg_h:.1f} píxeles")
+        with metrics_col2:
+            st.write(f"- Área: {area:.1f} píxeles²")
+            st.write(f"- Ratio: {(avg_w/avg_h):.2f}")
+
         # Display car metrics
         st.write("### Estadísticas del Vehículo")
-        subcol1, subcol2 = st.columns(2)
+        subcol1, subcol2, subcol3 = st.columns(3)
         with subcol1:
-            st.metric("Tiempo en Cuadro", f"{len(track_df)} frames")
+            st.metric("Frames", f"{len(track_df)}")
         with subcol2:
+            time_visible = len(track_df) / 30  # Assuming 30 fps
+            st.metric("Tiempo Visible", f"{time_visible:.1f}s")
+        with subcol3:
             distance = (
                 (track_df["X"].diff() ** 2 + track_df["Y"].diff() ** 2) ** 0.5
             ).sum()
-            st.metric("Distancia Total", f"{distance:.1f} píxeles")
+            st.metric("Distancia", f"{distance:.1f}px")
 
     # 5. Size Distribution
     st.subheader("Distribución de Tamaños de Vehículos")
