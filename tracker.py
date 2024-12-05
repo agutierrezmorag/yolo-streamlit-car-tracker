@@ -5,7 +5,8 @@ from datetime import datetime
 import cv2
 from ultralytics import solutions
 
-RESIZE_FACTOR = 0.5
+from constants import REGION_POINTS, RESIZE_FACTOR
+
 YOLO_MODELS = [
     "yolo11n.pt",  # nano
     "yolo11s.pt",  # small
@@ -50,16 +51,6 @@ def process_video(model_name):
         for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS)
     )
 
-    # Region points
-    region_points = [
-        (1298, 796),
-        (1444, 1428),
-        (2374, 1436),
-        (1554, 794),
-        (1456, 752),
-        (1284, 752),
-    ]
-
     # Video writer
     video_path = os.path.join(
         dirs["base"], f"output_{model_name.replace('.pt','')}.avi"
@@ -71,7 +62,7 @@ def process_video(model_name):
     # Initialize tracker
     trackzone = solutions.TrackZone(
         show=False,
-        region=region_points,
+        region=REGION_POINTS,
         model=model_name,
     )
 
