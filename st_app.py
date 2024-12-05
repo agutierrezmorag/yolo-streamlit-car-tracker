@@ -1,28 +1,52 @@
+import os
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
 
 @st.cache_data
-def load_data():
-    df = pd.read_csv("detections.csv")
+def load_data(model_name):
+    """Load data for specific YOLO model"""
+    csv_path = os.path.join(f"output_{model_name}", "data", "detections.csv")
+    df = pd.read_csv(csv_path)
     df["Timestamp"] = pd.to_datetime(df["Timestamp"])
     return df
 
 
+def get_available_models():
+    """Get list of available model outputs"""
+    return [
+        d.replace("output_", "") for d in os.listdir() if d.startswith("output_yolo")
+    ]
+
+
 def main():
     st.set_page_config(layout="wide")
-
     st.title("Análisis de Seguimiento de Vehículos")
-    df = load_data()
 
-    # 1. Statistics
+    # Model selection in sidebar
+    with st.sidebar:
+        available_models = get_available_models()
+        selected_model = st.selectbox(
+            "Seleccionar Modelo YOLO", available_models, format_func=lambda x: x.upper()
+        )
+        st.write("---")
+
+    # Load data for selected model
+    try:
+        df = load_data(selected_model)
+    except FileNotFoundError:
+        st.error("No se encontraron datos para el modelo seleccionado")
+        return
+
+    # Statistics in sidebar
     with st.sidebar:
         st.subheader("Estadísticas Generales")
         st.metric("Total de Vehículos Únicos", len(df["Track ID"].unique()))
 
         # Group by minute and calculate averages
-        df["Minute"] = df["Timestamp"].dt.floor("min")  # Round to minute
+        df["Minute"] = df["Timestamp"].dt.floor("min")
         vehicles_per_min = df.groupby("Minute")["Track ID"].nunique()
 
         # Calculate true per-minute metrics
